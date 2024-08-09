@@ -4,6 +4,7 @@
 , pkg-config
 , glib
 , gdk-pixbuf
+, webp-pixbuf-loader
 , installShellFiles
 , pango
 , cairo
@@ -69,6 +70,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   nativeBuildInputs = [
     gdk-pixbuf
+    webp-pixbuf-loader
     installShellFiles
     pkg-config
     rustc
@@ -96,6 +98,7 @@ stdenv.mkDerivation (finalAttrs: {
   propagatedBuildInputs = [
     glib
     gdk-pixbuf
+    webp-pixbuf-loader
     cairo
   ];
 
@@ -153,7 +156,7 @@ stdenv.mkDerivation (finalAttrs: {
   postInstall = let emulator = stdenv.hostPlatform.emulator buildPackages; in
     lib.optionalString (stdenv.hostPlatform.emulatorAvailable buildPackages) ''
       # Merge gdkpixbuf and librsvg loaders
-      cat ${lib.getLib gdk-pixbuf}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache $GDK_PIXBUF/loaders.cache > $GDK_PIXBUF/loaders.cache.tmp
+      cat ${lib.getLib gdk-pixbuf}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache ${webp-pixbuf-loader}/${gdk-pixbuf.binaryDir}/webp-loaders.cache $GDK_PIXBUF/loaders.cache > $GDK_PIXBUF/loaders.cache.tmp
       mv $GDK_PIXBUF/loaders.cache.tmp $GDK_PIXBUF/loaders.cache
 
       installShellCompletion --cmd rsvg-convert \
